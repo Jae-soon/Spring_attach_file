@@ -18,7 +18,7 @@ public class FileUploadController {
 
     @RequestMapping("")
     @ResponseBody
-    public String upload(@RequestParam("img1") MultipartFile img1, @RequestParam("img2") MultipartFile img2) {
+    public String upload(@RequestParam("img") MultipartFile img1, @RequestParam("img2") MultipartFile img2) {
         try {
             img1.transferTo(new File(genFileDirPath + "/1.png"));
             img2.transferTo(new File(genFileDirPath + "/2.png"));
