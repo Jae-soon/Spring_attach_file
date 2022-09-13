@@ -1,0 +1,9 @@
+<nav th:fragment="navbarFragment" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <a sec:authorize="isAnonymous()" th:href="@{/member/login}">로그인</a>
+    <a sec:authorize="isAnonymous()" th:href="@{/member/join}">회원가입</a>
+    <a sec:authorize="isAnonymous()" th:href="@{/member/login}">아이디 찾기</a>
+    <a sec:authorize="isAnonymous()" th:href="@{/member/login}">비밀번호 찾기</a>
+    <a sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
+    <img th:if="${loginedMember != null}" th:src="@{${loginedMemberProfileImgUrl}}" alt="">
+    <a sec:authorize="isAuthenticated()" th:href="@{/member/logout}"></a>
+</nav>

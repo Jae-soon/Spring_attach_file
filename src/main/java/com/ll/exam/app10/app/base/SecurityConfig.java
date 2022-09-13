@@ -26,7 +26,7 @@ public class SecurityConfig {
                         formLogin -> formLogin
                                 .loginPage("/member/login")
                                 .loginProcessingUrl("/member/login")
-                                .defaultSuccessUrl("/member/profile")
+//                                .defaultSuccessUrl("/member/profile")
                 );
 
 

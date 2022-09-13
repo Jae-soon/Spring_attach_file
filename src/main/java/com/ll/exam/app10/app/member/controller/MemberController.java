@@ -41,12 +41,7 @@ public class MemberController {
 
         password = passwordEncoder.encode(password); // 암호화
 
-        if (img != null) {
-            member = memberService.join(username, password, email, img);
-        } else {
-            member = memberService.join(username, password, email);
-        }
-
+        member = memberService.join(username, password, email, img);
 
         req.login(member.getUsername(), passwordClearText);
 

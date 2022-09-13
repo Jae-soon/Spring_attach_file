@@ -22,16 +22,22 @@ public class MemberEntity extends BaseEntity {
     private String email;
     private String img;
 
-    public void removeProfileImgOnStorage() {
-        if(img == null || img.trim().length() == 0) return;
+        public void removeProfileImgOnStorage() {
+            if(img == null || img.trim().length() == 0) return;
 
-        String profileImgPath = getImgPath();
+            String profileImgPath = getImgPath();
 
-        new File(profileImgPath).delete();
-    }
+            new File(profileImgPath).delete();
+        }
 
-    private String getImgPath() {
-        return AppConfig.GET_FILE_DIR_PATH + "/" + img;
+        private String getImgPath() {
+            return AppConfig.GET_FILE_DIR_PATH + "/" + img;
+        }
+
+        public String getProfileImgUrl() {
+        if ( img == null ) return null;
+
+        return "/gen/" + img;
     }
 }
 

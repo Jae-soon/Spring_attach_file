@@ -36,7 +36,6 @@ public class MemberService implements UserDetailsService {
         String fileName = UUID.randomUUID().toString() + ".png";
         String profileImgDirPath = genFileDirPath + "/" + profileImgDirName;
         String profileImgFilePath = profileImgDirPath + "/" + fileName;
-        String profileImgRelPath = "member/" + UUID.randomUUID().toString() + ".png";
 
         new File(profileImgDirPath).mkdirs();
 
@@ -45,6 +44,8 @@ public class MemberService implements UserDetailsService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        String profileImgRelPath = profileImgDirName + "/" + fileName;
 
         MemberEntity member = MemberEntity.builder()
                 .username(username)
