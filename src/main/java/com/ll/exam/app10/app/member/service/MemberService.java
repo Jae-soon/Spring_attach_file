@@ -56,6 +56,18 @@ public class MemberService implements UserDetailsService {
         return member;
     }
 
+    public MemberEntity join(String username, String password, String email) {
+        MemberEntity member = MemberEntity.builder()
+                .username(username)
+                .password(password)
+                .email(email)
+                .build();
+
+        memberRepository.save(member);
+
+        return member;
+    }
+
     public MemberEntity getMemberById(Long id) {
         return memberRepository.findById(id).orElse(null);
     }
@@ -67,5 +79,9 @@ public class MemberService implements UserDetailsService {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("member"));
         return new User(member.getUsername(), member.getPassword(), authorities);
+    }
+
+    public long count() {
+        return memberRepository.count();
     }
 }

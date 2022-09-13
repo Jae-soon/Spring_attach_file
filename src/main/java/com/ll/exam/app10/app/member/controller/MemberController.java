@@ -31,6 +31,7 @@ public class MemberController {
     @PostMapping("/join")
     public String join(HttpServletRequest req, String username, String password, String email, MultipartFile img) throws ServletException {
         MemberEntity oldMember = memberService.getMemberByUsername(username);
+        MemberEntity member;
 
         if (oldMember != null) {
             return "redirect:/?errorMsg=Already done.";
@@ -39,7 +40,13 @@ public class MemberController {
         String passwordClearText = password;
 
         password = passwordEncoder.encode(password); // 암호화
-        MemberEntity member = memberService.join(username, password, email, img);
+
+        if (img != null) {
+            member = memberService.join(username, password, email, img);
+        } else {
+            member = memberService.join(username, password, email);
+        }
+
 
         req.login(member.getUsername(), passwordClearText);
 
