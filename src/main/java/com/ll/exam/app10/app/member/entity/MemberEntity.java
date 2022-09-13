@@ -1,10 +1,12 @@
 package com.ll.exam.app10.app.member.entity;
 
+import com.ll.exam.app10.app.base.AppConfig;
 import com.ll.exam.app10.app.base.entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.io.File;
 
 @Entity
 @Setter
@@ -19,6 +21,18 @@ public class MemberEntity extends BaseEntity {
     private String password;
     private String email;
     private String img;
+
+    public void removeProfileImgOnStorage() {
+        if(img == null || img.trim().length() == 0) return;
+
+        String profileImgPath = getImgPath();
+
+        new File(profileImgPath).delete();
+    }
+
+    private String getImgPath() {
+        return AppConfig.GET_FILE_DIR_PATH + "/" + img;
+    }
 }
 
 //@Entity

@@ -65,4 +65,10 @@ public class MemberController {
 
         return "member/profile";
     }
+
+    @GetMapping("/login")
+    public String login() {
+        return "member/login_form";
+    }
+
 }

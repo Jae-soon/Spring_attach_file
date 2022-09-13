@@ -32,13 +32,16 @@ public class MemberService implements UserDetailsService {
     }
 
     public MemberEntity join(String username, String password, String email, MultipartFile img) {
+        String profileImgDirName = "member";
+        String fileName = UUID.randomUUID().toString() + ".png";
+        String profileImgDirPath = genFileDirPath + "/" + profileImgDirName;
+        String profileImgFilePath = profileImgDirPath + "/" + fileName;
         String profileImgRelPath = "member/" + UUID.randomUUID().toString() + ".png";
-        File profileImgFile = new File(genFileDirPath + "/" + profileImgRelPath);
 
-        profileImgFile.mkdirs(); // 관련된 폴더가 혹시나 없다면 만들어준다.
+        new File(profileImgDirPath).mkdirs();
 
         try {
-            img.transferTo(profileImgFile);
+            img.transferTo(new File(profileImgFilePath));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -83,5 +86,12 @@ public class MemberService implements UserDetailsService {
 
     public long count() {
         return memberRepository.count();
+    }
+
+    public void removeProfileImg(MemberEntity member) {
+        member.removeProfileImgOnStorage();
+        member.setImg(null);
+
+        memberRepository.save(member);
     }
 }

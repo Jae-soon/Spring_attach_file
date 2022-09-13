@@ -3,29 +3,36 @@ package com.ll.exam.app10;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.exam.app10.app.home.controller.HomeController;
 import com.ll.exam.app10.app.member.controller.MemberController;
+import com.ll.exam.app10.app.member.entity.MemberEntity;
 import com.ll.exam.app10.app.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
+import java.io.*;
 import java.lang.reflect.Member;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -39,10 +46,11 @@ public class GenFileServiceTests {
     private MockMvc mvc; // Controller 테스트
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private MemberService memberService;
+
+    @Value("${custom.genFileDirPath}")
+    private String genFileDirPath;
+
 
     @Test
     @DisplayName("메인화면에서는 안녕이 나와야 한다.")
@@ -108,5 +116,50 @@ public class GenFileServiceTests {
                 .andExpect(handler().handlerType(MemberController.class))
                 .andExpect(handler().methodName("showProfile"))
                 .andExpect(content().string(containsString("user4@test.com")));
+    }
+
+    @Test
+    @DisplayName("회원가입")
+    void t5() throws Exception {
+        String testUploadFileUrl = "https://picsum.photos/200/300";
+        String originalFileName = "test.png";
+
+        // wget
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Resource> response = restTemplate.getForEntity(testUploadFileUrl, Resource.class);
+        InputStream inputStream = response.getBody().getInputStream();
+
+        MockMultipartFile profileImg = new MockMultipartFile(
+                "profileImg",
+                originalFileName,
+                "image/png",
+                inputStream
+        );
+
+        // 회원가입(MVC MOCK)
+        // when
+        ResultActions resultActions = mvc.perform(
+                        multipart("/member/join")
+                                .file(profileImg)
+                                .param("username", "user5")
+                                .param("password", "1234")
+                                .param("email", "user5@test.com")
+                                .characterEncoding("UTF-8"))
+                .andDo(print());
+
+        // 5번회원이 생성되어야 함, 테스트
+        // 여기 마저 구현
+        resultActions
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/member/profile"))
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("join"));
+
+        MemberEntity member = memberService.getMemberById(5L);
+
+        assertThat(member).isNotNull();
+
+        memberService.removeProfileImg(member);
+        // 5번회원의 프로필 이미지 제거
     }
 }
