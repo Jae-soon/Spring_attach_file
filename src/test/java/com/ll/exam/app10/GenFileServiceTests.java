@@ -65,7 +65,7 @@ public class GenFileServiceTests {
         resultActions
                 .andExpect(status().is2xxSuccessful()) // http 응답 코드
                 .andExpect(handler().handlerType(HomeController.class)) // HomeController의 내용
-                .andExpect(handler().methodName("main")) // HomeController의 메서드 중 main
+                .andExpect(handler().methodName("showMain")) // HomeController의 메서드 중 main
                 .andExpect(content().string(containsString("안녕"))); // main 메서드로 매핑된 html파일 내에서 "안녕"이 포함되어 있는지 확인
     }
 
