@@ -23,11 +23,13 @@ public class MemberController {
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
 
+    @PreAuthorize("isAnonymous()")
     @GetMapping("/join")
     public String showJoin() {
         return "member/join_form";
     }
 
+    @PreAuthorize("isAnonymous()")
     @PostMapping("/join")
     public String join(HttpServletRequest req, String username, String password, String email, MultipartFile img) throws ServletException {
         MemberEntity oldMember = memberService.getMemberByUsername(username);
@@ -61,6 +63,7 @@ public class MemberController {
         return "member/profile";
     }
 
+    @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
     public String login() {
         return "member/login_form";

@@ -1,7 +1,23 @@
-<header th:if="${loginedMember != null}">
-    user3 / <img th:src="@{${loginedMemberProfileImgUrl}}" alt="">
-</header>
-<div>안녕</div>
-<div>
-    [[${param.errorMsg}]]
-</div>
+<!DOCTYPE html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://www.thymeleaf.org"
+        layout:decorate="~{layout/layout}">
+
+<head>
+    <title>메인페이지</title>
+</head>
+
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <header th:if="${loginedMember != null}">
+            user3 / <img th:src="@{${loginedMemberProfileImgUrl}}" alt="">
+        </header>
+        <hr>
+        <div>안녕</div>
+    </div>
+</section>
+</body>
+
+</html>
