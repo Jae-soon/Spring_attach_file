@@ -16,9 +16,10 @@ public class DevInitData {
         return args -> {
             String password = passwordEncoder.encode("1234");
             MemberEntity member1 = memberService.join("user1", password, "user1@test.com");
-
+            memberService.setProfileImgByUrl(member1, "https://picsum.photos/200/300");
 
             MemberEntity member2 = memberService.join("user2", password, "user2@test.com");
+            memberService.setProfileImgByUrl(member2, "https://picsum.photos/200/300");
         };
     }
 }
