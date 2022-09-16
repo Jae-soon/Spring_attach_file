@@ -37,6 +37,25 @@ public class MemberService {
     }
 
     public MemberEntity join(String username, String password, String email, MultipartFile img) {
+        String profileImgRelPath = saveProfileImg(img);
+
+        MemberEntity member = MemberEntity.builder()
+                .username(username)
+                .password(password)
+                .email(email)
+                .img(profileImgRelPath)
+                .build();
+
+        memberRepository.save(member);
+
+        return member;
+    }
+
+    private String saveProfileImg(MultipartFile img) {
+        if ( img == null || img.isEmpty() ) {
+            return null;
+        }
+
         String profileImgDirName = getCurrentProfileImgDirName();
 
         String ext = Util.file.getExt(img.getOriginalFilename());
@@ -53,19 +72,7 @@ public class MemberService {
             throw new RuntimeException(e);
         }
 
-        String profileImgRelPath = profileImgDirName + "/" + fileName;
-
-        MemberEntity member = MemberEntity.builder()
-                .username(username)
-                .password(password)
-                .email(email)
-
-                .img(profileImgRelPath)
-                .build();
-
-        memberRepository.save(member);
-
-        return member;
+        return profileImgDirName + "/" + fileName;
     }
 
     public MemberEntity join(String username, String password, String email) {
@@ -99,6 +106,15 @@ public class MemberService {
     public void setProfileImgByUrl(MemberEntity member, String url) {
         String filePath = Util.file.downloadImg(url, genFileDirPath + "/" + getCurrentProfileImgDirName() + "/" + UUID.randomUUID());
         member.setImg(getCurrentProfileImgDirName() + "/" + new File(filePath).getName());
+        memberRepository.save(member);
+    }
+
+    public void modify(MemberEntity member, String email, MultipartFile profileImg) {
+        removeProfileImg(member);
+        String profileImgRelPath = saveProfileImg(profileImg);
+
+        member.setEmail(email);
+        member.setImg(profileImgRelPath);
         memberRepository.save(member);
     }
 }

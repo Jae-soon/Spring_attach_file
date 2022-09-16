@@ -36,3 +36,7 @@ spring:
       ddl-auto: create
 custom:
   genFileDirPath: d:/temp/app10
+logging:
+  level:
+    root: info # 모든 디버그들이 다 출력된다.
+    com.ll.exam.app10: debug # 자세하게 출력된다. 해당 경로만

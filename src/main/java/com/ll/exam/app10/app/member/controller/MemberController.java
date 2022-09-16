@@ -60,6 +60,26 @@ public class MemberController {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify")
+    public String showModify() {
+        return "member/modify_form";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify")
+    public String modify(@AuthenticationPrincipal MemberContext context, String email, MultipartFile img, String profileImg__delete) {
+        MemberEntity member = memberService.getMemberById(context.getId());
+
+        if ( profileImg__delete != null && profileImg__delete.equals("Y") ) {
+            memberService.removeProfileImg(member);
+        }
+
+        memberService.modify(member, email, img);
+
+        return "redirect:/member/profile";
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
     public String showProfile(@AuthenticationPrincipal MemberContext memberContext, Model model) {
         model.addAttribute("memberContext", memberContext);
