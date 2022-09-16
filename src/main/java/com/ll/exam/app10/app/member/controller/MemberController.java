@@ -67,14 +67,10 @@ public class MemberController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify")
-    public String modify(@AuthenticationPrincipal MemberContext context, String email, MultipartFile img, String profileImg__delete) {
+    public String modify(@AuthenticationPrincipal MemberContext context, String email, MultipartFile profileImg) {
         MemberEntity member = memberService.getMemberById(context.getId());
 
-        if ( profileImg__delete != null && profileImg__delete.equals("Y") ) {
-            memberService.removeProfileImg(member);
-        }
-
-        memberService.modify(member, email, img);
+        memberService.modify(member, email, profileImg);
 
         return "redirect:/member/profile";
     }
@@ -99,12 +95,10 @@ public class MemberController {
 
     @GetMapping("/profile/img/{id}")
     public ResponseEntity<Object> showProfileImg(@PathVariable Long id) throws URISyntaxException {
-        System.out.println("안녕하세요.");
-
         URI redirectUri = new URI(memberService.getMemberById(id).getProfileImgUrl());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(redirectUri);
-        httpHeaders.setCacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS));
+        httpHeaders.setCacheControl(CacheControl.maxAge(60 * 60 * 1, TimeUnit.SECONDS));
         return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
     }
 
