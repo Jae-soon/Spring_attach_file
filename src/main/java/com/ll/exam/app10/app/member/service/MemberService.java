@@ -32,7 +32,7 @@ public class MemberService {
         return memberRepository.findByUsername(username).orElse(null);
     }
 
-    private String getCurrentProfileImgDirName() {
+    public String getCurrentProfileImgDirName() {
         return "member/" + Util.date.getCurrentDateFormatted("yyyy_MM_dd");
     }
 
